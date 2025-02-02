@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificación de Firmas de Formas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #6c5ce7;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        main {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        section {
+            margin-bottom: 2.5rem;
+        }
+        h2 {
+            color: #6c5ce7;
+            margin-bottom: 1.5rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+        input[type="file"] {
+            margin-bottom: 1.5rem;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        input[type="file"]:focus {
+            border-color: #6c5ce7;
+            outline: none;
+        }
+        button {
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #5a4fcf;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .output {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: #f1f3f5;
+            border-radius: 10px;
+            font-family: monospace;
+            transition: opacity 0.3s ease;
+        }
+        .classification-result, .evaluation-result {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .classification-result h3, .evaluation-result h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #6c5ce7;
+        }
+        .image-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        img:hover {
+            transform: scale(1.02);
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 2rem 0;
+        }
+        pre {
+            background-color: #f1f3f5;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Clasificación de Firmas de Formas</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Clasificar una Imagen</h2>
+            <input type="file" id="fileInput">
+            <button id="classifyBtn">Clasificar</button>
+            <div id="classificationOutput" class="output"></div>
+            <div class="image-container">
+                <img id="uploadedImage" style="display:none;" />
+                <img id="exampleImage" style="display:none;" />
+            </div>
+        </section>
+        <hr>
+        <section>
+            <h2>Evaluación del Modelo</h2>
+            <div id="evaluationOutput" class="output evaluation-result">
+                <p>Cargando evaluación del modelo...</p>
+            </div>
+            <img id="confusionMatrix" style="display:none;" />
+        </section>
+    </main>
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000';
+
+        document.getElementById('classifyBtn').addEventListener('click', async () => {
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) {
+                alert('Por favor, sube una imagen.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const response = await fetch(`${API_BASE_URL}/classify/`, { method: 'POST', body: formData });
+            const result = await response.json();
+
+            // Mostrar la imagen subida
+            const uploadedImage = document.getElementById('uploadedImage');
+            uploadedImage.src = URL.createObjectURL(fileInput.files[0]);
+            uploadedImage.style.display = 'block';
+
+            // Mostrar la imagen de ejemplo de la categoría predicha
+            const exampleImage = document.getElementById('exampleImage');
+            if (result.example_image_url) {
+                exampleImage.src = `${API_BASE_URL}${result.example_image_url}`;
+                exampleImage.style.display = 'block';
+            } else {
+                exampleImage.style.display = 'none';
+            }
+
+            // Mostrar el resultado de la clasificación
+            document.getElementById('classificationOutput').innerHTML = `
+                <div class="classification-result">
+                    <h3>Resultado de la Clasificación</h3>
+                    <p><strong>Nombre del archivo:</strong> ${result.filename}</p>
+                    <p><strong>Categoría predicha:</strong> ${result.predicted_category}</p>
+                    <p><strong>Confianza:</strong> ${result.confidence}%</p>
+                </div>`;
+        });
+
+        // Función para cargar la evaluación del modelo al iniciar la página
+        async function loadEvaluation() {
+            const response = await fetch(`${API_BASE_URL}/evaluate/`);
+            const result = await response.json();
+
+            document.getElementById('evaluationOutput').innerHTML = `
+                <div class="evaluation-result">
+                    <h3>Resultado de la Evaluación</h3>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                </div>`;
+
+            const imgElement = document.getElementById('confusionMatrix');
+            imgElement.src = `${API_BASE_URL}/images/confusion_matrix.png`;
+            imgElement.style.display = 'block';
+        }
+
+        // Cargar la evaluación al cargar la página
+        window.onload = loadEvaluation;
+    </script>
+</body>
+</html>

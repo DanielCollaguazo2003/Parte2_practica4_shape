@@ -1,0 +1,47 @@
+{
+    "horseshoe": [
+        "horseshoe/horseshoe-17.png",
+        "horseshoe/horseshoe-12.png",
+        "horseshoe/horseshoe-14.png",
+        "horseshoe/horseshoe-13.png",
+        "horseshoe/horseshoe-18.png",
+        "horseshoe/horseshoe-15.png",
+        "horseshoe/horseshoe-16.png"
+    ],
+    "cup": [
+        "cup/cup-18.png",
+        "cup/cup-13.png",
+        "cup/cup-17.png",
+        "cup/cup-10.png",
+        "cup/cup-11.png",
+        "cup/cup-15.png",
+        "cup/cup-16.png"
+    ],
+    "comma": [
+        "comma/Comma-10.png",
+        "comma/Comma-14.png",
+        "comma/Comma-12.png",
+        "comma/Comma-18.png",
+        "comma/Comma-15.png",
+        "comma/Comma-17.png",
+        "comma/Comma-16.png"
+    ],
+    "brick": [
+        "brick/brick-01.png",
+        "brick/brick-05.png",
+        "brick/brick-10.png",
+        "brick/brick-03.png",
+        "brick/brick-04.png",
+        "brick/brick-02.png",
+        "brick/brick-06.png"
+    ],
+    "camel": [
+        "camel/camel-16.png",
+        "camel/camel-11.png",
+        "camel/camel-18.png",
+        "camel/camel-12.png",
+        "camel/camel-15.png",
+        "camel/camel-13.png",
+        "camel/camel-14.png"
+    ]
+}

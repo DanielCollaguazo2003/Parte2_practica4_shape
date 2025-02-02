@@ -1,0 +1,27 @@
+{
+    "horseshoe": [
+        "horseshoe/horseshoe-1.png",
+        "horseshoe/horseshoe-11.png",
+        "horseshoe/horseshoe-10.png"
+    ],
+    "cup": [
+        "cup/cup-12.png",
+        "cup/cup-14.png",
+        "cup/cup-1.png"
+    ],
+    "comma": [
+        "comma/Comma-1.png",
+        "comma/Comma-11.png",
+        "comma/Comma-13.png"
+    ],
+    "brick": [
+        "brick/brick-08.png",
+        "brick/brick-07.png",
+        "brick/brick-09.png"
+    ],
+    "camel": [
+        "camel/camel-10.png",
+        "camel/camel-1.png",
+        "camel/camel-17.png"
+    ]
+}
